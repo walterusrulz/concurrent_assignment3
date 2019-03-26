@@ -9,6 +9,8 @@ package concurrent_assignment3;
  *
  * @author walterus
  */
+
+//making sure push is successful
 public class Concurrent_assignment3 {
 
     /**
