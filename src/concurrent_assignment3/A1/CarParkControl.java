@@ -65,7 +65,7 @@ class Arriving implements Runnable {
       try {
         while(true) {
           ThreadPanel.rotate(340); 
-          this.carpark.dispatch.acquire();//if permits available, then enters and decrements
+          this.carpark.dispatch.acquire();//if permits are available, then enters and decrements
           carpark.arrive();
           ThreadPanel.rotate(20);           
         }

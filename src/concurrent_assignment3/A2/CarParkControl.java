@@ -19,6 +19,7 @@ class CarParkControl {
     protected int capacity;
     NumberCanvas cont_;
     Counter counter;
+    boolean flag;//attribute flag
     
 
     CarParkControl(int n) {
@@ -31,16 +32,36 @@ class CarParkControl {
         capacity = spaces = n;
         counter = new Counter(cont_);
         counter.show(spaces);
+        flag=false;//added flag to constructor
+    }
+    //Just synching methods is enough, although threads that should not be running
+    //keep trying to get processor time and are rejected till coditions are fullfilled.
+    //Maybe it would be better to block a thread we know won't meet conditions.     
+
+    synchronized void arrive() throws InterruptedException {//sync for 1 
+        if(this.counter.value>0){
+           --spaces;
+           counter.show(spaces); 
+           //below we are actively unblocking departures if we spot 0 cars
+           //given we just parked one, we notify leaving, which is waiting
+           //for a car to remove, signalling its intent with FLAG
+           /*if(flag){
+               this.notify();
+           }*/
+        }
     }
 
-    void arrive() throws InterruptedException {
-        --spaces;
-        counter.show(spaces);    
-    }
-
-    void leaves() throws InterruptedException{
-        ++spaces;
-        counter.show(spaces);
+    synchronized void leaves() throws InterruptedException{
+        if(this.counter.value<4){
+           ++spaces;
+           counter.show(spaces); 
+           //below we block departures when NO cars are available
+           //also signal our intention with flag, so that when a new car
+           //arrives, the other thread will unblock us
+        }/*else{
+            flag=true;
+            this.wait();
+        }*/
      }
 }
 
