@@ -18,6 +18,7 @@ class CarParkControl {
     protected int capacity;
     NumberCanvas cont_;
     Counter counter;
+    Semaphore dispatch;//Semaphore declaration, class attribute
     
 
     CarParkControl(int n) {
@@ -30,14 +31,17 @@ class CarParkControl {
         capacity = spaces = n;
         counter = new Counter(cont_);
         counter.show(spaces);
+        dispatch = new Semaphore(n);//initialize within constructor
     }
 
     void arrive() throws InterruptedException {
+        System.out.print("Available permits "+dispatch.availablePermits());
         --spaces;
         counter.show(spaces);    
     }
 
     void leaves() throws InterruptedException{
+        System.out.println("Available permits "+dispatch.availablePermits());
         ++spaces;
         counter.show(spaces);
      }
@@ -61,7 +65,8 @@ class Arriving implements Runnable {
       try {
         while(true) {
           ThreadPanel.rotate(340); 
-           carpark.arrive();
+          this.carpark.dispatch.acquire();//if permits available, then enters and decrements
+          carpark.arrive();
           ThreadPanel.rotate(20);           
         }
       } catch (InterruptedException e){}
@@ -82,9 +87,12 @@ class Leaving implements Runnable {
     public void run() {
       try {
         while(true) {
-          ThreadPanel.rotate(20);
-          carpark.leaves();
-          ThreadPanel.rotate(340);        
+          if(this.carpark.counter.value<4){//do this only when there is a car inside
+            ThreadPanel.rotate(340);//I mean, free space is less than capacity, which is 4
+            this.carpark.dispatch.release();//releases 1 permit, 1 vacancy more available in parking
+            carpark.leaves();
+            ThreadPanel.rotate(20);  
+          }
         }
       } catch (InterruptedException e){}
     }
