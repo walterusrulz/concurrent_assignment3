@@ -15,15 +15,15 @@ class CarWorld extends JPanel {
     ArrayList<Car> redCars = new ArrayList<Car>();
 
     public CarWorld() {
-	controller = new TrafficController();
+	controller = new TrafficController(false);
         MediaTracker mt = new MediaTracker(this);
 	Toolkit toolkit = Toolkit.getDefaultToolkit();
 
-        redCar = toolkit.getImage("image/redcar.gif");
+        redCar = toolkit.getImage("/home/walterus/NetBeansProjects/concurrent_assignment3/src/concurrent_assignment3/cars_images/redcar.gif");
         mt.addImage(redCar, 0);
-        blueCar = toolkit.getImage("image/bluecar.gif");
+        blueCar = toolkit.getImage("/home/walterus/NetBeansProjects/concurrent_assignment3/src/concurrent_assignment3/cars_images/bluecar.gif");
         mt.addImage(blueCar, 1);
-        bridge = toolkit.getImage("image/bridge1.gif");
+        bridge = toolkit.getImage("/home/walterus/NetBeansProjects/concurrent_assignment3/src/concurrent_assignment3/cars_images/bridge1.gif");
         mt.addImage(bridge, 2);
 
         try {

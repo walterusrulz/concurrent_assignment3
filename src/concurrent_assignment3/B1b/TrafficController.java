@@ -1,5 +1,8 @@
 package concurrent_assignment3.B1b;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * Remember to move the 'cars_images' folder to the root directory
  * of your project,
@@ -13,24 +16,43 @@ package concurrent_assignment3.B1b;
  *
  */
 public class TrafficController {
-
+     volatile boolean flag;
      
+      TrafficController(boolean cond) {
+         this.flag=cond;
+    }
     
-    public void redEnters() {
- 
+    synchronized public void redEnters() {
+        while(this.flag){
+            try {
+                this.wait();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(TrafficController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        flag=true;
     }
 
-    public  void blueEnters() {
-	
+    synchronized public  void blueEnters() {
+	while(this.flag){
+            try {
+                this.wait();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(TrafficController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        flag=true;
     }
 
-     public  void blueExits() {
-    	
+    synchronized public  void blueExits() {
+    	this.flag= false;
+        this.notify();
     	 
     }
 
-    public  void redExits() {
-
+    synchronized public  void redExits() {
+        this.flag= false;
+        this.notify();
 	
 
     }
